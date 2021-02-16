@@ -1,4 +1,5 @@
 import { BrowserWindow, App, ipcMain } from 'electron';
+import * as path from 'path';
 
 export default class Main {
   static mainWindow: BrowserWindow | null;
@@ -21,7 +22,7 @@ export default class Main {
       width: 800,
       height: 600,
       webPreferences: {
-        nodeIntegration: true
+        preload: path.join(__dirname, 'preload.js')
       }
     });
     if (Main.mainWindow) {
