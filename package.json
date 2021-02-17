@@ -11,7 +11,7 @@
     "pack-app": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "type-check": "tsc",
-    "start:server": "tsc --p ./src/server && node ./dist/server.js",
+    "start:server": "tsc --p ./src/server && node ./main/server.js",
     "lint": "eslint . --ext .ts"
   },
   "repository": "https://github.com/electron/electron-quick-start",
