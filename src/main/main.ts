@@ -42,7 +42,7 @@ export default class Main {
     }
   }
 
-  private static createAnswerWindow () {
+  private static createAnswerWindow (arg: any) {
     Main.childWindow = new Main.BrowserWindow({
       parent: Main.mainWindow,
       webPreferences: {
@@ -60,6 +60,7 @@ export default class Main {
       Main.childWindow.loadURL(url);
       Main.childWindow.once('ready-to-show', () => {
         Main.childWindow?.show();
+        Main.childWindow?.webContents.send('question-index-reply', arg);
       });
       Main.childWindow.once('closed', () => { Main.childWindow = null; });
     }
@@ -71,8 +72,8 @@ export default class Main {
     Main.application.on('window-all-closed', Main.onWindowAllClosed);
     Main.application.on('ready', Main.onReady);
     ipcMain.on('open-window', (event, arg) => {
-      if (!Main.childWindow) Main.createAnswerWindow();
-      Main.childWindow?.webContents.send('question-index-reply', arg);
+      if (!Main.childWindow) Main.createAnswerWindow(arg);
+      else Main.childWindow?.webContents.send('question-index-reply', arg);
       event.reply('open-window-reply', 'pong');
     });
   }
