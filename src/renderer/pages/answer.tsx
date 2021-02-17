@@ -17,7 +17,7 @@ const AnswerPage = () => {
   useEffect(() => {
     global.ipcRenderer.addListener('question-index-reply', (_event, args) => {
       getAnswer(args);
-      console.log(answer);
+      console.log(args);
     });
     return () => {};
   }, []);
