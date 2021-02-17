@@ -1,5 +1,8 @@
 import { BrowserWindow, App, ipcMain } from 'electron';
-import * as path from 'path';
+import { join } from 'path';
+import { format } from 'url';
+import isDev from 'electron-is-dev';
+import prepareNext from 'electron-next';
 
 export default class Main {
   static mainWindow: BrowserWindow | null;
@@ -17,16 +20,24 @@ export default class Main {
     Main.mainWindow = null;
   }
 
-  private static onReady () {
+  private static async onReady () {
+    await prepareNext('./src/renderer', 3000);
     Main.mainWindow = new Main.BrowserWindow({
       width: 800,
       height: 600,
       webPreferences: {
-        preload: path.join(__dirname, 'preload.js')
+        preload: join(__dirname, 'preload.js')
       }
     });
     if (Main.mainWindow) {
-      Main.mainWindow.loadURL('file://' + __dirname + '/index.html');
+      const url = isDev
+        ? 'http://localhost:3000/'
+        : format({
+          pathname: join(__dirname, '../src/renderer/out/index.html'),
+          protocol: 'file:',
+          slashes: true
+        });
+      Main.mainWindow.loadURL(url);
       Main.mainWindow.on('closed', Main.onClose);
     }
   }
