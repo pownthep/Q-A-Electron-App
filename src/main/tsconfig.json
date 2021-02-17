@@ -4,8 +4,8 @@
     "module": "commonjs",
     "sourceMap": true,
     "removeComments": true,
-    "noImplicitAny": true,
-    "outDir": "../../dist",
+    "noImplicitAny": false,
+    "outDir": "../../main",
     "strict": true,
     "esModuleInterop": true
   },
