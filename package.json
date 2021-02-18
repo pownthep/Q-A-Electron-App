@@ -4,15 +4,18 @@
   "description": "A minimal Electron application",
   "main": "main/app.js",
   "scripts": {
-    "dev": "npm run build-electron && electron .",
-    "build-renderer": "next build src/renderer && next export src/renderer",
-    "build-electron": "tsc --p ./src/main",
-    "build": "npm run build-renderer && npm run build-electron",
+    "build:renderer": "next build src/renderer && next export src/renderer",
+    "build:electron": "tsc --p ./src/main",
+    "build:server": "tsc --p ./src/server",
+    "build": "npm run build:renderer && npm run build:electron",
+    "start:electron": "npm run build:electron && electron .",
+    "start:server": "npm run build:server && node ./main/server.js",
     "pack-app": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
     "type-check": "tsc",
-    "start:server": "tsc --p ./src/server && node ./main/server.js",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "dev:server": "nodemon --watch src/server --ext \"ts, json\" --exec \"npm run start:server\"",
+    "dev:electron": "nodemon --watch src/main --ext \"ts, json\" --exec \"npm run start:electron\""
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
@@ -28,13 +31,15 @@
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "electron": "^11.2.3",
+    "electron-builder": "^22.9.1",
     "eslint": "^7.20.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
-    "typescript": "^4.1.5",
-    "electron-builder": "^22.9.1"
+    "nodemon": "^2.0.7",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.5"
   },
   "dependencies": {
     "@types/cors": "^2.8.10",
