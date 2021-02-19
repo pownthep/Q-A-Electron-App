@@ -15,7 +15,8 @@
     "type-check": "tsc",
     "lint": "eslint . --ext .ts",
     "dev:server": "nodemon --watch src/server --ext \"ts, json\" --exec \"npm run start:server\"",
-    "dev:electron": "nodemon --watch src/main --ext \"ts, json\" --exec \"npm run start:electron\""
+    "dev:electron": "nodemon --watch src/main --ext \"ts, json\" --exec \"npm run start:electron\"",
+    "dev:next": "cross-env NODE_OPTIONS='--inspect' next src/renderer"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [

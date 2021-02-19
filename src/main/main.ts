@@ -21,7 +21,7 @@ export default class Main {
   }
 
   private static async onReady () {
-    await prepareNext('./src/renderer', 3000);
+    if (!isDev) await prepareNext('./src/renderer', 3000);
     Main.mainWindow = new Main.BrowserWindow({
       width: 800,
       height: 600,
@@ -39,6 +39,7 @@ export default class Main {
         });
       Main.mainWindow.loadURL(url);
       Main.mainWindow.on('closed', Main.onClose);
+      Main.mainWindow.webContents.openDevTools();
     }
   }
 
