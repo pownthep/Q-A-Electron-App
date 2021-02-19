@@ -7,7 +7,10 @@
     "noImplicitAny": false,
     "outDir": "../../main",
     "strict": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "strictFunctionTypes": true
   },
   "exclude": ["node_modules"]
 }
