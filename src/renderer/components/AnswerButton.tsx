@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-use-before-define
 import React, { useState } from 'react';
+import { ipcArgurments } from '../../types/common/index';
 
 type Props = {
   questionNumber: number;
@@ -14,32 +15,23 @@ const AnswerButton = ({
   isCorrect,
   incrementNumber
 }: Props) => {
-  const [clicked, setClicked] = useState(false);
-
+  const [display, setDisplay] = useState(false);
   return (
-    <>
-    {
-      clicked
-        ? (
-        <div></div>
-          )
-        : (
-        <button
-          className="animated animatedFadeInUp fadeInUp answers-btn"
-          onClick={() => {
-            global.ipcRenderer.send('open-window', [
-              questionNumber,
-              isCorrect,
-              text
-            ]);
-            if (isCorrect) incrementNumber();
-            else setClicked(true);
-          }}
-        >
-          {text}
-        </button>
-          )}
-      </>
+    <button
+      className="answers-btn"
+      onClick={() => {
+        global.ipcRenderer.send('open-window', {
+          questionNumber: questionNumber,
+          isCorrect: isCorrect,
+          text: text
+        } as ipcArgurments);
+        if (isCorrect) incrementNumber();
+        else setDisplay(true);
+      }}
+      style={{ opacity: display ? '0.0' : '1.0' }}
+    >
+      {text}
+    </button>
   );
 };
 

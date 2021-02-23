@@ -3,34 +3,46 @@ import { join } from 'path';
 import { format } from 'url';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
+import { BrowserWindowConstructorOptions } from 'electron/main';
+import { IpcMainEvent } from 'electron/common';
+import { ipcArgurments, ipcReply } from '../types/common/index';
 
 export default class Main {
   static mainWindow: BrowserWindow | null;
   static childWindow: BrowserWindow | null;
   static application: App;
-  static BrowserWindow: any;
+  static BrowserWindow: typeof BrowserWindow;
+  static readonly initialMainWindowOptions: BrowserWindowConstructorOptions = {
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: join(__dirname, 'preload.js')
+    }
+  };
 
-  private static onWindowAllClosed () {
+  static readonly initialChildWindowOptions: BrowserWindowConstructorOptions = {
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: join(__dirname, 'preload.js')
+    }
+  };
+
+  private static onWindowAllClosed () : void {
     if (process.platform !== 'darwin') {
       Main.application.quit();
     }
   }
 
-  private static onClose () {
+  private static onClose () : void {
     Main.mainWindow = null;
   }
 
   private static async onReady () {
     if (!isDev) await prepareNext('./src/renderer', 3000);
-    Main.mainWindow = new Main.BrowserWindow({
-      width: 800,
-      height: 600,
-      webPreferences: {
-        preload: join(__dirname, 'preload.js')
-      }
-    });
+    Main.mainWindow = new Main.BrowserWindow(Main.initialMainWindowOptions);
     if (Main.mainWindow) {
-      const url = isDev
+      const url:string = isDev
         ? 'http://localhost:3000/'
         : format({
           pathname: join(__dirname, '../src/renderer/out/index.html'),
@@ -43,15 +55,10 @@ export default class Main {
     }
   }
 
-  private static createAnswerWindow (arg: any) {
-    Main.childWindow = new Main.BrowserWindow({
-      parent: Main.mainWindow,
-      webPreferences: {
-        preload: join(__dirname, 'preload.js')
-      }
-    });
+  private static createChildWindow (arg: any) : void {
+    Main.childWindow = new Main.BrowserWindow(Main.initialChildWindowOptions);
     if (Main.childWindow) {
-      const url = isDev
+      const url: string = isDev
         ? 'http://localhost:3000/answer'
         : format({
           pathname: join(__dirname, '../src/renderer/out/answer.html'),
@@ -59,7 +66,7 @@ export default class Main {
           slashes: true
         });
       Main.childWindow.loadURL(url);
-      Main.childWindow.once('ready-to-show', () => {
+      Main.childWindow.once('ready-to-show', () : void => {
         Main.childWindow?.show();
         Main.childWindow?.webContents.send('question-index-reply', arg);
       });
@@ -67,15 +74,16 @@ export default class Main {
     }
   }
 
-  static main (app: App, browserWindow: typeof BrowserWindow) {
+  static main (app: App, browserWindow: typeof BrowserWindow) : void {
     Main.BrowserWindow = browserWindow;
     Main.application = app;
     Main.application.on('window-all-closed', Main.onWindowAllClosed);
     Main.application.on('ready', Main.onReady);
-    ipcMain.on('open-window', (event, arg) => {
-      if (!Main.childWindow) Main.createAnswerWindow(arg);
+    ipcMain.on('open-window', (event: IpcMainEvent, arg: ipcArgurments) => {
+      if (!Main.childWindow) Main.createChildWindow(arg);
       else Main.childWindow?.webContents.send('question-index-reply', arg);
-      event.reply('open-window-reply', 'pong');
+      const reply: ipcReply = { text: 'pong' };
+      event.reply('open-window-reply', reply);
     });
   }
 }

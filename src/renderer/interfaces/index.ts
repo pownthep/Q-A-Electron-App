@@ -7,7 +7,7 @@ declare global {
   namespace NodeJS {
     // eslint-disable-next-line no-unused-vars
     interface Global {
-      ipcRenderer: IpcRenderer
+      ipcRenderer: IpcRenderer,
     }
   }
 }
