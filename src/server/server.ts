@@ -2,10 +2,11 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { Question } from '../types/common/index';
+require('dotenv').config();
 
 const app: Application = express();
 app.use(cors());
-const PORT: number = 8000;
+const PORT: number = Number(process.env.PORT) || 8000 || 0;
 const QUESTIONS: Question[] = [
   {
     category: 'Entertainment: Cartoon & Animations',
