@@ -1,11 +1,12 @@
 /* eslint-disable spaced-comment */
-import express from 'express';
+import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
+import { Question } from '../types/common/index';
 
-const app = express();
+const app: Application = express();
 app.use(cors());
-const PORT = 8000;
-const QUESTIONS = [
+const PORT: number = 8000;
+const QUESTIONS: Question[] = [
   {
     category: 'Entertainment: Cartoon & Animations',
     type: 'multiple',
@@ -126,16 +127,18 @@ const QUESTIONS = [
   }
 ];
 
-app.get('/questions', (req, res) => {
+app.get('/questions', (req: Request, res: Response) => {
   res.json(QUESTIONS);
 });
 
-app.get('/answer/:index', (req, res) => {
-  const index = Number(req.params.index);
+app.get('/answer/:index', (req: Request, res: Response) => {
+  const index: number = Number(req.params.index);
   if (isNaN(index)) {
-    res.status(500).send('Index is a not number. 2');
+    res.status(400).send('Parameter "index" should an integer');
+  } else {
+    const answer: string = QUESTIONS[index].correct_answer;
+    res.json(answer);
   }
-  res.json(QUESTIONS[index].correct_answer);
 });
 
 app.listen(PORT, () => {
