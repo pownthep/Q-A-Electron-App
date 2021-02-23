@@ -85,5 +85,8 @@ export default class Main {
       const reply: ipcReply = { text: 'pong' };
       event.reply('open-window-reply', reply);
     });
+    ipcMain.on('close-window', (_event: IpcMainEvent, _arg: ipcArgurments) => {
+      if (Main.childWindow) Main.childWindow.close();
+    });
   }
 }

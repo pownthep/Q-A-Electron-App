@@ -6,3 +6,6 @@ export function registerIPCListeners<T> (eventName: string, callback: (_event: I
     callback
   );
 }
+export function sendIPCMessage<T> (channelName: string, message: T) : void {
+  global.ipcRenderer.send(channelName, message);
+}

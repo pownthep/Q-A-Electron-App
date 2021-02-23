@@ -2,7 +2,7 @@ import Layout from '../components/Layout';
 import { useEffect, useState } from 'react';
 import { ipcArgurments } from '../../types/common/index';
 import { IpcRendererEvent } from 'electron';
-import { registerIPCListeners } from '../common/ipc';
+import { registerIPCListeners, sendIPCMessage } from '../common/ipc';
 import { AxiosRequestConfig } from 'axios';
 import { fetch } from '../common/fetch';
 
@@ -41,11 +41,18 @@ const AnswerPage = () => {
     getState(initialData);
   };
 
+  const closeWindow = (): void => {
+    const channelName: string = 'close-window';
+    const message: string = 'close';
+    sendIPCMessage<string>(channelName, message);
+  };
+
   useEffect(() => {
     registerIPCListeners<ipcArgurments>(
       'question-index-reply',
       questionIndexReplyListener
     );
+    setTimeout(closeWindow, 3000);
     return () => { };
   }, []);
 
